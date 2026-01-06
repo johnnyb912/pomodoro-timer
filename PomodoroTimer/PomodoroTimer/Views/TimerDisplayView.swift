@@ -1,11 +1,7 @@
 import SwiftUI
 
 /// Large countdown display showing remaining time in MM:SS format
-///
-/// Features:
-/// - Monospaced font for stable width during countdown
-/// - Dynamic Type support via minimumScaleFactor
-/// - VoiceOver-friendly accessibility label
+/// Monospace digits with tabular nums for stable width
 struct TimerDisplayView: View {
     let seconds: Int
 
@@ -15,7 +11,14 @@ struct TimerDisplayView: View {
 
     var body: some View {
         Text(timeString)
-            .font(.system(size: 56, weight: .light, design: .monospaced))
+            .font(.system(
+                size: DesignSystem.Typography.timerSize,
+                weight: DesignSystem.Typography.timerWeight,
+                design: .monospaced
+            ))
+            .monospacedDigit()
+            .tracking(-2)
+            .foregroundColor(.foregroundPrimary)
             .minimumScaleFactor(0.5)
             .lineLimit(1)
             .accessibilityLabel(accessibilityTimeLabel)
@@ -35,9 +38,11 @@ struct TimerDisplayView: View {
 }
 
 #Preview {
-    VStack(spacing: 20) {
+    VStack(spacing: DesignSystem.Spacing.generous) {
         TimerDisplayView(seconds: 1500)
         TimerDisplayView(seconds: 65)
         TimerDisplayView(seconds: 5)
     }
+    .padding()
+    .background(Color.backgroundPrimary)
 }

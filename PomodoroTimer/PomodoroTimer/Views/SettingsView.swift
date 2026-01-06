@@ -1,14 +1,7 @@
 import SwiftUI
 
-/// Settings screen for configuring Pomodoro timer behavior
-///
-/// Allows customization of:
-/// - Work, short break, and long break durations
-/// - Long break interval (sessions before long break)
-/// - Auto-start behavior
-/// - Sound on/off
-///
-/// Note: Changes to durations apply to the next session, not the current one.
+/// Settings screen with minimal, precise design
+/// Clean form layout with consistent typography
 struct SettingsView: View {
     @EnvironmentObject var viewModel: PomodoroViewModel
     @Environment(\.dismiss) var dismiss
@@ -16,56 +9,110 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Durations") {
-                    Stepper(
-                        "Work: \(viewModel.settings.workDurationMinutes) min",
+                // Durations section
+                Section {
+                    durationRow(
+                        label: "Work",
                         value: $viewModel.settings.workDurationMinutes,
-                        in: 1...120
+                        range: 1...120,
+                        accessibilityLabel: "Work duration"
                     )
-                    .accessibilityLabel("Work duration")
-                    .accessibilityValue("\(viewModel.settings.workDurationMinutes) minutes")
 
-                    Stepper(
-                        "Short Break: \(viewModel.settings.shortBreakMinutes) min",
+                    durationRow(
+                        label: "Short break",
                         value: $viewModel.settings.shortBreakMinutes,
-                        in: 1...60
+                        range: 1...60,
+                        accessibilityLabel: "Short break duration"
                     )
-                    .accessibilityLabel("Short break duration")
-                    .accessibilityValue("\(viewModel.settings.shortBreakMinutes) minutes")
 
-                    Stepper(
-                        "Long Break: \(viewModel.settings.longBreakMinutes) min",
+                    durationRow(
+                        label: "Long break",
                         value: $viewModel.settings.longBreakMinutes,
-                        in: 1...60
+                        range: 1...60,
+                        accessibilityLabel: "Long break duration"
                     )
-                    .accessibilityLabel("Long break duration")
-                    .accessibilityValue("\(viewModel.settings.longBreakMinutes) minutes")
+                } header: {
+                    sectionHeader("DURATIONS")
                 }
 
-                Section("Cycle") {
-                    Stepper(
-                        "Long break every \(viewModel.settings.longBreakInterval) sessions",
-                        value: $viewModel.settings.longBreakInterval,
-                        in: 2...10
-                    )
+                // Cycle section
+                Section {
+                    HStack {
+                        Text("Sessions before long break")
+                            .font(.system(size: DesignSystem.Typography.bodySize))
+                            .foregroundColor(.foregroundPrimary)
+
+                        Spacer()
+
+                        Stepper(
+                            "\(viewModel.settings.longBreakInterval)",
+                            value: $viewModel.settings.longBreakInterval,
+                            in: 2...10
+                        )
+                        .labelsHidden()
+                        .fixedSize()
+
+                        Text("\(viewModel.settings.longBreakInterval)")
+                            .font(.system(
+                                size: DesignSystem.Typography.bodySize,
+                                weight: .medium,
+                                design: .monospaced
+                            ))
+                            .foregroundColor(.foregroundSecondary)
+                            .frame(width: 24, alignment: .trailing)
+                    }
                     .accessibilityLabel("Long break interval")
                     .accessibilityValue("Every \(viewModel.settings.longBreakInterval) work sessions")
+                } header: {
+                    sectionHeader("CYCLE")
                 }
 
-                Section("Behavior") {
-                    Toggle("Auto-start next session", isOn: $viewModel.settings.autoStartNextSession)
-                        .accessibilityLabel("Auto-start next session")
-
-                    Toggle("Sound enabled", isOn: $viewModel.settings.soundEnabled)
-                        .accessibilityLabel("Sound enabled")
-                }
-
+                // Behavior section
                 Section {
-                    Text("Changes to durations apply to the next session.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
+                    Toggle(isOn: $viewModel.settings.autoStartNextSession) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Auto-start next session")
+                                .font(.system(size: DesignSystem.Typography.bodySize))
+                                .foregroundColor(.foregroundPrimary)
+                            Text("Automatically begin the next timer")
+                                .font(.system(size: DesignSystem.Typography.captionSize))
+                                .foregroundColor(.foregroundMuted)
+                        }
+                    }
+                    .tint(.accentWork)
+                    .accessibilityLabel("Auto-start next session")
+
+                    Toggle(isOn: $viewModel.settings.soundEnabled) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Sound")
+                                .font(.system(size: DesignSystem.Typography.bodySize))
+                                .foregroundColor(.foregroundPrimary)
+                            Text("Play sound when session completes")
+                                .font(.system(size: DesignSystem.Typography.captionSize))
+                                .foregroundColor(.foregroundMuted)
+                        }
+                    }
+                    .tint(.accentWork)
+                    .accessibilityLabel("Sound enabled")
+                } header: {
+                    sectionHeader("BEHAVIOR")
+                }
+
+                // Info section
+                Section {
+                    HStack(spacing: DesignSystem.Spacing.tight) {
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 13))
+                            .foregroundColor(.foregroundMuted)
+                        Text("Duration changes apply to the next session")
+                            .font(.system(size: DesignSystem.Typography.captionSize))
+                            .foregroundColor(.foregroundMuted)
+                    }
+                    .listRowBackground(Color.clear)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.backgroundPrimary)
             .navigationTitle("Settings")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -75,12 +122,67 @@ struct SettingsView: View {
                     Button("Done") {
                         dismiss()
                     }
+                    .font(.system(
+                        size: DesignSystem.Typography.bodySize,
+                        weight: .medium
+                    ))
+                    .foregroundColor(.foregroundPrimary)
                 }
             }
         }
         #if os(macOS)
-        .frame(minWidth: 350, minHeight: 400)
+        .frame(minWidth: 380, minHeight: 420)
         #endif
+    }
+
+    // MARK: - Components
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.system(
+                size: DesignSystem.Typography.sectionSize,
+                weight: DesignSystem.Typography.sectionWeight
+            ))
+            .tracking(0.5)
+            .foregroundColor(.foregroundMuted)
+    }
+
+    private func durationRow(
+        label: String,
+        value: Binding<Int>,
+        range: ClosedRange<Int>,
+        accessibilityLabel: String
+    ) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: DesignSystem.Typography.bodySize))
+                .foregroundColor(.foregroundPrimary)
+
+            Spacer()
+
+            Stepper(
+                "\(value.wrappedValue) min",
+                value: value,
+                in: range
+            )
+            .labelsHidden()
+            .fixedSize()
+
+            Text("\(value.wrappedValue)")
+                .font(.system(
+                    size: DesignSystem.Typography.bodySize,
+                    weight: .medium,
+                    design: .monospaced
+                ))
+                .foregroundColor(.foregroundSecondary)
+                .frame(width: 32, alignment: .trailing)
+
+            Text("min")
+                .font(.system(size: DesignSystem.Typography.captionSize))
+                .foregroundColor(.foregroundMuted)
+        }
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityValue("\(value.wrappedValue) minutes")
     }
 }
 

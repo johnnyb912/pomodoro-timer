@@ -1,25 +1,27 @@
 import SwiftUI
 
-/// Main content view that adapts layout based on screen size
-///
-/// Provides two layouts:
-/// - Compact: Vertical stack for iPhone portrait
-/// - Wide: Horizontal layout for Mac and landscape
+/// Main content view with precise, minimal design
+/// Design direction: Precision & Utility — calm, technical, non-distracting
 struct ContentView: View {
     @EnvironmentObject var viewModel: PomodoroViewModel
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         GeometryReader { geometry in
             let isCompact = geometry.size.width < 500
 
-            if isCompact {
-                compactLayout
-            } else {
-                wideLayout
+            ZStack {
+                // Background
+                Color.backgroundPrimary
+                    .ignoresSafeArea()
+
+                if isCompact {
+                    compactLayout
+                } else {
+                    wideLayout
+                }
             }
         }
-        .background(backgroundColor)
         .sheet(isPresented: $viewModel.showingSettings) {
             SettingsView()
                 .environmentObject(viewModel)
@@ -29,110 +31,134 @@ struct ContentView: View {
         } message: {
             Text(viewModel.alertMessage)
         }
-        #if os(iOS)
-        .statusBarHidden(false)
-        #endif
     }
 
-    // MARK: - Layouts
+    // MARK: - Compact Layout (iPhone)
 
     private var compactLayout: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 0) {
             Spacer()
 
-            phaseLabel
+            // Timer card
+            VStack(spacing: DesignSystem.Spacing.generous) {
+                // Phase indicator
+                phaseIndicator
 
-            timerSection
+                // Timer display
+                TimerDisplayView(seconds: viewModel.secondsRemaining)
 
-            SessionIndicatorsView(
-                completed: viewModel.completedWorkSessions,
-                total: viewModel.cycleTarget
-            )
+                // Progress bar
+                ProgressRingView(
+                    progress: viewModel.progress,
+                    phase: viewModel.phase
+                )
+                .frame(height: 4)
+                .padding(.horizontal, DesignSystem.Spacing.major)
 
-            Spacer()
-
-            ControlButtonsView()
-                .environmentObject(viewModel)
-
-            settingsButton
-
-            Spacer()
-        }
-        .padding()
-    }
-
-    private var wideLayout: some View {
-        HStack(spacing: 40) {
-            VStack(spacing: 20) {
-                phaseLabel
-                timerSection
+                // Session indicators
                 SessionIndicatorsView(
                     completed: viewModel.completedWorkSessions,
                     total: viewModel.cycleTarget
                 )
             }
-            .frame(maxWidth: .infinity)
+            .padding(DesignSystem.Spacing.generous)
+            .cardStyle(padding: DesignSystem.Spacing.generous)
+            .padding(.horizontal, DesignSystem.Spacing.comfortable)
 
-            VStack(spacing: 24) {
+            Spacer()
+
+            // Controls
+            VStack(spacing: DesignSystem.Spacing.comfortable) {
                 ControlButtonsView()
                     .environmentObject(viewModel)
+
                 settingsButton
             }
-            .frame(width: 200)
+            .padding(.bottom, DesignSystem.Spacing.major)
         }
-        .padding(40)
+    }
+
+    // MARK: - Wide Layout (Mac / iPad)
+
+    private var wideLayout: some View {
+        HStack(spacing: DesignSystem.Spacing.xlarge) {
+            Spacer()
+
+            // Timer card
+            VStack(spacing: DesignSystem.Spacing.generous) {
+                phaseIndicator
+
+                TimerDisplayView(seconds: viewModel.secondsRemaining)
+
+                ProgressRingView(
+                    progress: viewModel.progress,
+                    phase: viewModel.phase
+                )
+                .frame(height: 4)
+                .padding(.horizontal, DesignSystem.Spacing.major)
+
+                SessionIndicatorsView(
+                    completed: viewModel.completedWorkSessions,
+                    total: viewModel.cycleTarget
+                )
+            }
+            .padding(DesignSystem.Spacing.major)
+            .cardStyle(padding: DesignSystem.Spacing.major)
+            .frame(minWidth: 320, maxWidth: 400)
+
+            // Controls panel
+            VStack(spacing: DesignSystem.Spacing.generous) {
+                ControlButtonsView()
+                    .environmentObject(viewModel)
+
+                Divider()
+                    .background(Color.borderSubtle)
+
+                settingsButton
+            }
+            .frame(width: 160)
+
+            Spacer()
+        }
+        .padding(DesignSystem.Spacing.xlarge)
     }
 
     // MARK: - Components
 
-    private var phaseLabel: some View {
-        Text(viewModel.phase.displayName)
-            .font(.title2)
-            .fontWeight(.semibold)
-            .foregroundColor(phaseColor)
-            .accessibilityLabel(viewModel.phase.accessibilityLabel)
-    }
+    private var phaseIndicator: some View {
+        HStack(spacing: DesignSystem.Spacing.tight) {
+            Circle()
+                .fill(Color.phaseColor(for: viewModel.phase))
+                .frame(width: 6, height: 6)
 
-    private var timerSection: some View {
-        ZStack {
-            ProgressRingView(
-                progress: viewModel.progress,
-                color: phaseColor
-            )
-            .frame(width: 220, height: 220)
-
-            TimerDisplayView(seconds: viewModel.secondsRemaining)
+            Text(viewModel.phase.displayName.uppercased())
+                .font(.system(
+                    size: DesignSystem.Typography.sectionSize,
+                    weight: DesignSystem.Typography.sectionWeight
+                ))
+                .tracking(0.5)
+                .foregroundColor(.foregroundMuted)
         }
+        .accessibilityLabel(viewModel.phase.accessibilityLabel)
     }
 
     private var settingsButton: some View {
         Button {
             viewModel.showingSettings = true
         } label: {
-            Label("Settings", systemImage: "gearshape")
-                .font(.body)
+            HStack(spacing: DesignSystem.Spacing.tight) {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 13, weight: .medium))
+                Text("Settings")
+                    .font(.system(
+                        size: DesignSystem.Typography.captionSize,
+                        weight: DesignSystem.Typography.captionWeight
+                    ))
+            }
+            .foregroundColor(.foregroundMuted)
         }
-        .buttonStyle(.plain)
-        .foregroundColor(.secondary)
+        .buttonStyle(SecondaryButtonStyle())
         .accessibilityLabel("Open settings")
-    }
-
-    // MARK: - Colors
-
-    private var phaseColor: Color {
-        switch viewModel.phase {
-        case .work: return .red
-        case .shortBreak: return .green
-        case .longBreak: return .blue
-        }
-    }
-
-    private var backgroundColor: Color {
-        #if os(macOS)
-        return Color(nsColor: .windowBackgroundColor)
-        #else
-        return Color(uiColor: .systemBackground)
-        #endif
     }
 }
 

@@ -1,49 +1,46 @@
 import SwiftUI
 
-/// Circular progress indicator showing session progress
-///
-/// Features:
-/// - Background ring with reduced opacity
-/// - Animated foreground ring that fills clockwise
-/// - Customizable color and line width
-/// - High contrast friendly (uses solid colors)
+/// Minimal linear progress bar showing session progress
+/// Design: slim horizontal bar, fills left to right
 struct ProgressRingView: View {
     let progress: Double
-    let color: Color
-    var lineWidth: CGFloat = 12
+    let phase: PomodoroPhase
 
     var body: some View {
-        ZStack {
-            // Background ring
-            Circle()
-                .stroke(color.opacity(0.2), lineWidth: lineWidth)
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                // Background track
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.borderSubtle)
 
-            // Progress ring
-            Circle()
-                .trim(from: 0, to: CGFloat(min(progress, 1.0)))
-                .stroke(
-                    color,
-                    style: StrokeStyle(
-                        lineWidth: lineWidth,
-                        lineCap: .round
-                    )
-                )
-                .rotationEffect(.degrees(-90))
-                .animation(.linear(duration: 0.25), value: progress)
+                // Progress fill
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.phaseColor(for: phase))
+                    .frame(width: geometry.size.width * CGFloat(min(max(progress, 0), 1)))
+                    .animation(.easeOut(duration: DesignSystem.Animation.standard), value: progress)
+            }
         }
         .accessibilityHidden(true)
     }
 }
 
 #Preview {
-    VStack(spacing: 20) {
-        ProgressRingView(progress: 0.0, color: .red)
-            .frame(width: 150, height: 150)
-        ProgressRingView(progress: 0.25, color: .red)
-            .frame(width: 150, height: 150)
-        ProgressRingView(progress: 0.75, color: .green)
-            .frame(width: 150, height: 150)
-        ProgressRingView(progress: 1.0, color: .blue)
-            .frame(width: 150, height: 150)
+    VStack(spacing: DesignSystem.Spacing.generous) {
+        ProgressRingView(progress: 0.0, phase: .work)
+            .frame(height: 4)
+
+        ProgressRingView(progress: 0.25, phase: .work)
+            .frame(height: 4)
+
+        ProgressRingView(progress: 0.5, phase: .shortBreak)
+            .frame(height: 4)
+
+        ProgressRingView(progress: 0.75, phase: .shortBreak)
+            .frame(height: 4)
+
+        ProgressRingView(progress: 1.0, phase: .longBreak)
+            .frame(height: 4)
     }
+    .padding(DesignSystem.Spacing.generous)
+    .background(Color.backgroundPrimary)
 }

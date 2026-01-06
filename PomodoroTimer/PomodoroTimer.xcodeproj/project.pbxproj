@@ -25,6 +25,7 @@
 		0100000000000016 /* HapticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000016 /* HapticService.swift */; };
 		0100000000000017 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000017 /* TimeFormatter.swift */; };
 		0100000000000018 /* PomodoroEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000018 /* PomodoroEngineTests.swift */; };
+		0100000000000019 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0200000000000019 /* DesignSystem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		0200000000000016 /* HapticService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticService.swift; sourceTree = "<group>"; };
 		0200000000000017 /* TimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
 		0200000000000018 /* PomodoroEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroEngineTests.swift; sourceTree = "<group>"; };
+		0200000000000019 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		0600000000000001 /* PomodoroTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PomodoroTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0600000000000002 /* PomodoroTimerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PomodoroTimerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -155,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				0200000000000017 /* TimeFormatter.swift */,
+				0200000000000019 /* DesignSystem.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 				0100000000000015 /* SoundService.swift in Sources */,
 				0100000000000016 /* HapticService.swift in Sources */,
 				0100000000000017 /* TimeFormatter.swift in Sources */,
+				0100000000000019 /* DesignSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
