@@ -9,16 +9,20 @@ struct TimerDisplayView: View {
         TimeFormatter.format(seconds: seconds)
     }
 
+    private var timerFont: Font {
+        .system(
+            size: DesignSystem.Typography.timerSize,
+            weight: DesignSystem.Typography.timerWeight,
+            design: .monospaced
+        )
+    }
+
     var body: some View {
         Text(timeString)
-            .font(.system(
-                size: DesignSystem.Typography.timerSize,
-                weight: DesignSystem.Typography.timerWeight,
-                design: .monospaced
-            ))
+            .font(timerFont)
             .monospacedDigit()
             .tracking(-2)
-            .foregroundColor(.foregroundPrimary)
+            .foregroundColor(Color.foregroundPrimary)
             .minimumScaleFactor(0.5)
             .lineLimit(1)
             .accessibilityLabel(accessibilityTimeLabel)

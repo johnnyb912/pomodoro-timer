@@ -40,7 +40,7 @@ struct SettingsView: View {
                     HStack {
                         Text("Sessions before long break")
                             .font(.system(size: DesignSystem.Typography.bodySize))
-                            .foregroundColor(.foregroundPrimary)
+                            .foregroundColor(Color.foregroundPrimary)
 
                         Spacer()
 
@@ -58,7 +58,7 @@ struct SettingsView: View {
                                 weight: .medium,
                                 design: .monospaced
                             ))
-                            .foregroundColor(.foregroundSecondary)
+                            .foregroundColor(Color.foregroundSecondary)
                             .frame(width: 24, alignment: .trailing)
                     }
                     .accessibilityLabel("Long break interval")
@@ -73,26 +73,26 @@ struct SettingsView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Auto-start next session")
                                 .font(.system(size: DesignSystem.Typography.bodySize))
-                                .foregroundColor(.foregroundPrimary)
+                                .foregroundColor(Color.foregroundPrimary)
                             Text("Automatically begin the next timer")
                                 .font(.system(size: DesignSystem.Typography.captionSize))
-                                .foregroundColor(.foregroundMuted)
+                                .foregroundColor(Color.foregroundMuted)
                         }
                     }
-                    .tint(.accentWork)
+                    .tint(Color.accentWork)
                     .accessibilityLabel("Auto-start next session")
 
                     Toggle(isOn: $viewModel.settings.soundEnabled) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Sound")
                                 .font(.system(size: DesignSystem.Typography.bodySize))
-                                .foregroundColor(.foregroundPrimary)
+                                .foregroundColor(Color.foregroundPrimary)
                             Text("Play sound when session completes")
                                 .font(.system(size: DesignSystem.Typography.captionSize))
-                                .foregroundColor(.foregroundMuted)
+                                .foregroundColor(Color.foregroundMuted)
                         }
                     }
-                    .tint(.accentWork)
+                    .tint(Color.accentWork)
                     .accessibilityLabel("Sound enabled")
                 } header: {
                     sectionHeader("BEHAVIOR")
@@ -103,10 +103,10 @@ struct SettingsView: View {
                     HStack(spacing: DesignSystem.Spacing.tight) {
                         Image(systemName: "info.circle")
                             .font(.system(size: 13))
-                            .foregroundColor(.foregroundMuted)
+                            .foregroundColor(Color.foregroundMuted)
                         Text("Duration changes apply to the next session")
                             .font(.system(size: DesignSystem.Typography.captionSize))
-                            .foregroundColor(.foregroundMuted)
+                            .foregroundColor(Color.foregroundMuted)
                     }
                     .listRowBackground(Color.clear)
                 }
@@ -126,7 +126,7 @@ struct SettingsView: View {
                         size: DesignSystem.Typography.bodySize,
                         weight: .medium
                     ))
-                    .foregroundColor(.foregroundPrimary)
+                    .foregroundColor(Color.foregroundPrimary)
                 }
             }
         }
@@ -144,7 +144,7 @@ struct SettingsView: View {
                 weight: DesignSystem.Typography.sectionWeight
             ))
             .tracking(0.5)
-            .foregroundColor(.foregroundMuted)
+            .foregroundColor(Color.foregroundMuted)
     }
 
     private func durationRow(
@@ -156,7 +156,7 @@ struct SettingsView: View {
         HStack {
             Text(label)
                 .font(.system(size: DesignSystem.Typography.bodySize))
-                .foregroundColor(.foregroundPrimary)
+                .foregroundColor(Color.foregroundPrimary)
 
             Spacer()
 
@@ -174,12 +174,12 @@ struct SettingsView: View {
                     weight: .medium,
                     design: .monospaced
                 ))
-                .foregroundColor(.foregroundSecondary)
+                .foregroundColor(Color.foregroundSecondary)
                 .frame(width: 32, alignment: .trailing)
 
             Text("min")
                 .font(.system(size: DesignSystem.Typography.captionSize))
-                .foregroundColor(.foregroundMuted)
+                .foregroundColor(Color.foregroundMuted)
         }
         .accessibilityLabel(accessibilityLabel)
         .accessibilityValue("\(value.wrappedValue) minutes")

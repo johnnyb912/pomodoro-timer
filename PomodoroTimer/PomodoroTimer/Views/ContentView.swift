@@ -128,7 +128,7 @@ struct ContentView: View {
     private var phaseIndicator: some View {
         HStack(spacing: DesignSystem.Spacing.tight) {
             Circle()
-                .fill(Color.phaseColor(for: viewModel.phase))
+                .fill(DesignSystem.phaseColor(for: viewModel.phase))
                 .frame(width: 6, height: 6)
 
             Text(viewModel.phase.displayName.uppercased())
@@ -137,7 +137,7 @@ struct ContentView: View {
                     weight: DesignSystem.Typography.sectionWeight
                 ))
                 .tracking(0.5)
-                .foregroundColor(.foregroundMuted)
+                .foregroundColor(Color.foregroundMuted)
         }
         .accessibilityLabel(viewModel.phase.accessibilityLabel)
     }
@@ -155,7 +155,7 @@ struct ContentView: View {
                         weight: DesignSystem.Typography.captionWeight
                     ))
             }
-            .foregroundColor(.foregroundMuted)
+            .foregroundColor(Color.foregroundMuted)
         }
         .buttonStyle(SecondaryButtonStyle())
         .accessibilityLabel("Open settings")

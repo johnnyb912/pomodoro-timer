@@ -6,6 +6,14 @@ struct SessionIndicatorsView: View {
     let completed: Int
     let total: Int
 
+    private var captionFont: Font {
+        .system(
+            size: DesignSystem.Typography.captionSize,
+            weight: DesignSystem.Typography.captionWeight,
+            design: .monospaced
+        )
+    }
+
     var body: some View {
         HStack(spacing: DesignSystem.Spacing.tight) {
             ForEach(0..<total, id: \.self) { index in
@@ -23,12 +31,8 @@ struct SessionIndicatorsView: View {
 
             // Session count text
             Text("\(completed)/\(total)")
-                .font(.system(
-                    size: DesignSystem.Typography.captionSize,
-                    weight: DesignSystem.Typography.captionWeight,
-                    design: .monospaced
-                ))
-                .foregroundColor(.foregroundMuted)
+                .font(captionFont)
+                .foregroundColor(Color.foregroundMuted)
                 .padding(.leading, DesignSystem.Spacing.tight)
         }
         .accessibilityElement(children: .ignore)

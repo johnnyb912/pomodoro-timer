@@ -15,7 +15,7 @@ struct ProgressRingView: View {
 
                 // Progress fill
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(Color.phaseColor(for: phase))
+                    .fill(DesignSystem.phaseColor(for: phase))
                     .frame(width: geometry.size.width * CGFloat(min(max(progress, 0), 1)))
                     .animation(.easeOut(duration: DesignSystem.Animation.standard), value: progress)
             }
