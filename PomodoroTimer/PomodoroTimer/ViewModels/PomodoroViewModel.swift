@@ -115,7 +115,7 @@ final class PomodoroViewModel: ObservableObject {
     /// Reset timer to initial state
     func reset() {
         engine.reset()
-        notificationService.cancelPending()
+        Task { await notificationService.cancelPending() }
         syncFromEngine()
         saveState()
         hapticService.lightImpact()
@@ -124,7 +124,7 @@ final class PomodoroViewModel: ObservableObject {
     /// Skip to next phase
     func skip() {
         _ = engine.skip()
-        notificationService.cancelPending()
+        Task { await notificationService.cancelPending() }
         syncFromEngine()
         saveState()
         hapticService.mediumImpact()
@@ -167,7 +167,7 @@ final class PomodoroViewModel: ObservableObject {
         let previousPhase = phase
         let nextPhase = engine.sessionCompleted()
 
-        notificationService.cancelPending()
+        Task { await notificationService.cancelPending() }
 
         // Play sound and haptic feedback
         if settings.soundEnabled {
@@ -241,7 +241,9 @@ final class PomodoroViewModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.appWillResignActive()
+            Task { @MainActor in
+                self?.appWillResignActive()
+            }
         }
 
         NotificationCenter.default.addObserver(
@@ -249,7 +251,9 @@ final class PomodoroViewModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.appDidBecomeActive()
+            Task { @MainActor in
+                self?.appDidBecomeActive()
+            }
         }
         #elseif os(macOS)
         NotificationCenter.default.addObserver(
@@ -257,7 +261,9 @@ final class PomodoroViewModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.appWillResignActive()
+            Task { @MainActor in
+                self?.appWillResignActive()
+            }
         }
 
         NotificationCenter.default.addObserver(
@@ -265,7 +271,9 @@ final class PomodoroViewModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.appDidBecomeActive()
+            Task { @MainActor in
+                self?.appDidBecomeActive()
+            }
         }
         #endif
     }
